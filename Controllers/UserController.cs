@@ -20,15 +20,15 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("getusers")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Employee, Manager")]
     public async Task<IActionResult> GetAllUsers()
     {
         try
         {
-            IEnumerable<User> users = await services.GetAllUsersAsync();
+            IEnumerable<UserGetResponseDto> users = await services.GetAllUsersAsync();
 
             return Ok(users);
-        } 
+        }
         catch (Exception e)
         {
             return BadRequest(e.Message);
@@ -37,11 +37,12 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("getuser")]
+    [Authorize(Roles = "Employee, Manager")]
     public async Task<IActionResult> GetUserById([FromHeader] Guid id)
     {
         try
         {
-            User user = await services.GetUserByIdAsync(id);
+            UserGetResponseDto user = await services.GetUserByIdAsync(id);
 
             return Ok(user);
         }
@@ -53,6 +54,7 @@ public class UserController : ControllerBase
 
     [HttpPost]
     [Route("adduser")]
+    [AllowAnonymous]
     public async Task<IActionResult> AddUser([FromBody] UserAddRequestDto user)
     {
         try
@@ -69,11 +71,12 @@ public class UserController : ControllerBase
 
     [HttpPut]
     [Route("updateusers")]
-    public async Task<IActionResult> UpdateUser([FromHeader]Guid id, [FromBody] UserUpdateRequestDto user)
+    [Authorize(Roles = "Employee, Manager")]
+    public async Task<IActionResult> UpdateUser([FromHeader] Guid id, [FromBody] UserUpdateRequestDto user)
     {
         try
         {
-            User userUpdated = await services.UpdateUserAsync(id, user);
+            UserUpdateResponseDto userUpdated = await services.UpdateUserAsync(id, user);
 
             return Accepted(user);
         }
@@ -85,6 +88,7 @@ public class UserController : ControllerBase
 
     [HttpDelete]
     [Route("deleteusers")]
+    [Authorize(Roles = "Manager")]
     public async Task<IActionResult> DeleteUser([FromHeader] Guid id)
     {
         try

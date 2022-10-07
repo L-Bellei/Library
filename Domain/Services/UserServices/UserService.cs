@@ -73,25 +73,82 @@ public class UserService : IUserService
         };
     }
 
-    public Task DeleteUserAsync(Guid Id)
+    public async Task DeleteUserAsync(Guid id)
     {
-        throw new NotImplementedException();
+        await userRepository.DeleteUserAsync(id);
     }
 
-    public async Task<IEnumerable<User>> GetAllUsersAsync()
+    public async Task<IEnumerable<UserGetResponseDto>> GetAllUsersAsync()
+    {
+        IEnumerable<User>? users = await userRepository.GetAllUsersAsync();
+        IList<UserGetResponseDto> usersResponse = new List<UserGetResponseDto>();
+
+        if (users == null)
+            throw new Exception("No users registered");
+
+        foreach (var user in users)
+        {
+            UserGetResponseDto aux = new()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Role = user.Role,
+                UserName = user.UserName,
+            };
+
+            usersResponse.Add(aux);
+        }
+
+        return usersResponse;
+    }
+
+    public async Task<UserGetResponseDto> GetUserByIdAsync(Guid id)
+    {
+        User? userFinded = await userRepository.GetUserAsync(id);
+
+        if (userFinded == null)
+            throw new Exception("User not found");
+
+        return new UserGetResponseDto
+        {
+            Id = userFinded.Id,
+            UserName = userFinded.UserName,
+            Email = userFinded.Email,
+            Role = userFinded.Role,
+        };
+
+
+    }
+
+    public async Task<UserUpdateResponseDto> UpdateUserAsync(Guid id, UserUpdateRequestDto user)
     {
         IEnumerable<User>? users = await userRepository.GetAllUsersAsync();
 
-        return users;
-    }
+        if (users == null)
+            throw new Exception("User not found");
+        else
+        {
+            User? userFinded = users.Where(x => x.Id == id).FirstOrDefault();
 
-    public Task<User> GetUserByIdAsync(Guid Id)
-    {
-        throw new NotImplementedException();
-    }
+            if (user == null)
+                throw new Exception("User not found");
+            else
+            {
+                userFinded!.UserName = user.UserName;
+                userFinded.Email = user.Email;
+                userFinded.Role = user.Role;
+                userFinded.Cpf = user.Cpf;
+            }
 
-    public Task<User> UpdateUserAsync(Guid Id, UserUpdateRequestDto user)
-    {
-        throw new NotImplementedException();
+            User userUpdated = await userRepository.UpdateUserAsync(userFinded);
+
+            return new UserUpdateResponseDto
+            {
+              Id = userUpdated.Id,
+              Email = userUpdated.Email,    
+              UserName = userUpdated.UserName,
+              Role = userUpdated.Role,  
+            };
+        }
     }
 }

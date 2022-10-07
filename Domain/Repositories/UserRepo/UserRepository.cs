@@ -1,6 +1,7 @@
 ﻿using Library.Domain.Entities;
 using Library.Infra;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Library.Domain.Repositories.UserRepo;
 
@@ -24,28 +25,20 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public async Task<User> UpdateUserAsync(Guid id, User user)
+    public async Task<User> UpdateUserAsync(User user)
     {
-        User? userFinded = await db.Users.FirstOrDefaultAsync(x => x.Id == id);
-    
-        if(userFinded == null)
-            throw new Exception("User not found");
+        if (!(db.Users.Include(x => x.Email == user.Email) != null))
+            throw new Exception("E-mail's already registered");
 
-        if (!(userFinded.Email == user.Email))
-        {
-            if (!(db.Users.Include(x => x.Email == user.Email) != null))
-                throw new Exception("E-mail's already registered");
-        }
+        EntityEntry<User> _user = db.Entry(user);
 
-        userFinded.UserName = user.UserName;
-        userFinded.Email = user.Email;
-        userFinded.Cpf = user.Cpf;
-        userFinded.Role = user.Role;
+        _user.Property<DateTime>("updatedAt").CurrentValue = DateTime.Now;
+        _user.State = EntityState.Modified;
 
-        db.Users.Update(userFinded);
+        db.Users.Update(user);
         await db.SaveChangesAsync();
 
-        return userFinded;
+        return user;
     }
 
     public async Task DeleteUserAsync(Guid id)
