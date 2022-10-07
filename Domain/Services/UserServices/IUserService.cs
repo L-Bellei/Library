@@ -1,12 +1,14 @@
 ﻿using Library.Domain.Entities;
+using Library.Domain.Repositories.UserRepo.Dtos;
 
 namespace Library.Domain.Services.UserServices;
 
 public interface IUserService
 {
+    Task<UserLoginResponseDto?> VerifyUserLoginAsync(string email, string password);
     Task<IEnumerable<User>> GetAllUsersAsync();
     Task<User> GetUserByIdAsync(Guid Id);
-    Task<User> AddUserAsync(User user);
-    Task<User> UpdateUserAsync(Guid Id, User user);
+    Task<UserAddResponseDto> AddUserAsync(UserAddRequestDto user);
+    Task<User> UpdateUserAsync(Guid Id, UserUpdateRequestDto user);
     Task DeleteUserAsync(Guid Id);
 }

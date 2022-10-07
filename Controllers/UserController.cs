@@ -1,8 +1,8 @@
 ﻿using Library.Domain.Entities;
+using Library.Domain.Repositories.UserRepo.Dtos;
 using Library.Domain.Services.UserServices;
-using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RouteAttribute = Microsoft.AspNetCore.Components.RouteAttribute;
 
 namespace Library.Controllers;
 
@@ -19,6 +19,8 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
+    [Route("getusers")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAllUsers()
     {
         try
@@ -34,7 +36,8 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetUserById([FromBody] Guid id)
+    [Route("getuser")]
+    public async Task<IActionResult> GetUserById([FromHeader] Guid id)
     {
         try
         {
@@ -49,13 +52,14 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddUser([FromBody] User user)
+    [Route("adduser")]
+    public async Task<IActionResult> AddUser([FromBody] UserAddRequestDto user)
     {
         try
         {
-            User userCreated = await services.AddUserAsync(user);
+            UserAddResponseDto userCreated = await services.AddUserAsync(user);
 
-            return Created("" ,user);
+            return Ok(user);
         }
         catch (Exception e)
         {
@@ -64,7 +68,8 @@ public class UserController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateUser([FromBody]Guid id, User user)
+    [Route("updateusers")]
+    public async Task<IActionResult> UpdateUser([FromHeader]Guid id, [FromBody] UserUpdateRequestDto user)
     {
         try
         {
@@ -79,6 +84,7 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete]
+    [Route("deleteusers")]
     public async Task<IActionResult> DeleteUser([FromHeader] Guid id)
     {
         try

@@ -19,6 +19,8 @@ public class UserRepository : IUserRepository
             throw new Exception("E-mail's already registered");
 
         await db.Users.AddAsync(user);
+        await db.SaveChangesAsync();
+
         return user;
     }
 
@@ -57,12 +59,12 @@ public class UserRepository : IUserRepository
         await db.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<User>> GetAllUsersAsync()
+    public async Task<IEnumerable<User>?> GetAllUsersAsync()
     {
         IEnumerable<User> users = await db.Users.ToListAsync();
 
         if (users.Count() == 0)
-            throw new Exception("No Users registered");
+            return null;
 
         return users;
     }
