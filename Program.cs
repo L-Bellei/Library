@@ -42,6 +42,34 @@ builder.Services.AddAuthentication(tk =>
         };
     });
 
+builder.Services.AddSwaggerGen(s =>
+    s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    })
+);
+
+builder.Services.AddSwaggerGen(s =>
+    s.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[]{}
+        }
+    })
+);
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
