@@ -7,6 +7,7 @@ namespace Library.Infra;
 public class ApplicationDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
+    public DbSet<Book> Books { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> opt) : base(opt) { }
 
@@ -15,5 +16,7 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(builder);
 
         builder.ApplyConfiguration(new UserConfiguration());
+
+        builder.ApplyConfiguration(new BookConfiguration());
     }
 }
