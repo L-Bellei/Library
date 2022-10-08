@@ -16,6 +16,8 @@
   - Example("Data Source=YOUR-SQL-SERVER;Initial Catalog=Library-LocalDb;Integrated Security=True").
   
 - On cmd: execute command "dotnet-ef database update" for create tables in your database.
+- On Swagger: 
+  - Use default User "Admin": { e-mail: admin@library.com, password: admin } for initial login to get the token on response.
 
 ### Packages:
 
