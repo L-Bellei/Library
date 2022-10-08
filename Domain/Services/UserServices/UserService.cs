@@ -60,7 +60,6 @@ public class UserService : IUserService
             UserName = user.UserName,
             Email = user.Email,
             Password = user.Password,
-            Cpf = user.Cpf,
             Role = user.Role,
         });
 
@@ -137,7 +136,6 @@ public class UserService : IUserService
                 userFinded!.UserName = user.UserName;
                 userFinded.Email = user.Email;
                 userFinded.Role = user.Role;
-                userFinded.Cpf = user.Cpf;
             }
 
             User userUpdated = await userRepository.UpdateUserAsync(userFinded);

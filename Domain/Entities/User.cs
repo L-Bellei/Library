@@ -6,7 +6,6 @@ public class User
     public string UserName { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
-    public string Cpf { get; set; }
     public string Role { get; set; }
 
     public User() { }
@@ -17,7 +16,6 @@ public class User
         this.UserName = username;
         this.Email = email;
         this.Password = password;
-        this.Cpf = cpf;
         this.Role = role;
     }
 }

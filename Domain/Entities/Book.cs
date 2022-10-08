@@ -7,6 +7,7 @@ public class Book
     public string Author { get; set; }
     public string PublishCompany { get; set; }
     public string Subject { get; set; }
+    public List<Inventory> inventories { get; set; }
 
     public Book()
     {

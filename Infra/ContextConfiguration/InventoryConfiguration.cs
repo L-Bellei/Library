@@ -4,27 +4,20 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Library.Infra.ContextConfiguration;
 
-public class UserConfiguration : IEntityTypeConfiguration<User>
+public class InventoryConfiguration : IEntityTypeConfiguration<Inventory>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public void Configure(EntityTypeBuilder<Inventory> builder)
     {
         builder
-            .ToTable("users");
+            .ToTable("inventory");
 
         builder
-            .Property(x => x.UserName)
+            .Property(i => i.Amount)
             .IsRequired();
 
         builder
-            .Property(x => x.Password)
-            .IsRequired();
-
-        builder
-            .Property(x => x.Email)
-            .IsRequired();
-
-        builder
-            .Property(x => x.Role)
+            .HasOne(i => i.Book)
+            .WithMany(b => b.inventories)
             .IsRequired();
 
         builder
