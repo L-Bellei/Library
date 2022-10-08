@@ -118,6 +118,11 @@ public class BookService : IBookService
             throw new Exception("Book not found");
         else
         {
+            bookFinded.Title = book.Title;
+            bookFinded.Author = book.Author;
+            bookFinded.Subject = book.Subject;
+            bookFinded.PublishCompany = book.PublishCompany;
+
             Book bookUpdated = await bookRepository.UpdateBookAsync(bookFinded);
 
             return new BookUpdateResponseDto

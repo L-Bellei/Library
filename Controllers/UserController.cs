@@ -70,7 +70,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPut]
-    [Route("updateusers")]
+    [Route("updateuser")]
     [Authorize(Roles = "Employee, Manager")]
     public async Task<IActionResult> UpdateUser([FromHeader] Guid id, [FromBody] UserUpdateRequestDto user)
     {
