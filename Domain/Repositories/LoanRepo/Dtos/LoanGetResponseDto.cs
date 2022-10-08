@@ -7,6 +7,6 @@ public class LoanGetResponseDto
     public string UserName { get; set; }
     public DateTime LoanDate { get; set; }
     public DateTime DeadlineDate { get; set; }
-    public DateTime DevolutionDate { get; set; }
+    public DateTime? DevolutionDate { get; set; }
     public bool Returned { get; set; }
 }

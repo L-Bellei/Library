@@ -22,21 +22,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSqlServer<ApplicationDbContext>(builder.Configuration["ConnectionStrings:LibraryDb"]);
 
-builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddTransient<ITokenService, TokenService>();
 
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddTransient<IBookService, BookService>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 
-builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddTransient<IInventoryService, InventoryService>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 
-builder.Services.AddScoped<IPenaltyService, PenaltyService>();
+builder.Services.AddTransient<IPenaltyService, PenaltyService>();
 builder.Services.AddScoped<IPenaltyRepository, PenaltyRepository>();
 
-builder.Services.AddScoped<ILoanService, LoanService>();
+builder.Services.AddTransient<ILoanService, LoanService>();
 builder.Services.AddScoped<ILoanRepository, LoanRepository>();
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);

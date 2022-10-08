@@ -7,12 +7,10 @@ namespace Library.Domain.Services.PenaltyServices;
 public class PenaltyService : IPenaltyService
 {
     private readonly IPenaltyRepository penaltyRepository;
-    private readonly ILoanService loanService;
 
     public PenaltyService(IPenaltyRepository penaltyRepository, ILoanService loanService)
     {
         this.penaltyRepository = penaltyRepository;
-        this.loanService = loanService;
     }
 
     public Task<PenaltyAddResponseDto> AddPenaltyAsync(PenaltyAddRequestDto penalty)

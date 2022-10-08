@@ -13,8 +13,7 @@ public class LoanConfiguration : IEntityTypeConfiguration<Loan>
             .IsRequired();
 
         builder
-            .Property(l => l.DevolutionDate)
-            .IsRequired();
+            .Property(l => l.DevolutionDate);
 
         builder
             .Property(l => l.DeadlineDate)
