@@ -2,6 +2,24 @@
 
 - This project is about a library management, Users and employees control, loan control of books and print reports on operations.
 
+### Warnings:
+
+ - This application needs .NET 6 SDK.
+
 ### For Execution:
 
-- In AppSettings: Change the connection string for your local Sql Server Connection.
+- Clone this repository on your visual studio 
+  - (tutorial is here: "https://learn.microsoft.com/pt-br/visualstudio/get-started/tutorial-open-project-from-repo?view=vs-2022").
+
+- On AppSettings: Change the connection string for your local Sql Server Connection.
+- On cmd: execute command "dotnet-ef database update" for create tables in database.
+
+### Packages:
+
+- Microsoft.EntityFrameworkCore
+- Microsoft.EntityFrameworkCore.Tools
+- Microsoft.EntityFrameworkCore.SqlServer
+- Microsoft.EntityFrameworkCore.Design
+- Microsoft.AspNetCore.Authentication
+- Microsoft.AspNetCore.Authentication.JwtBearer
+- Swashbuckle.AspNetcore
