@@ -2,6 +2,7 @@ using Library.Domain.Repositories.BookRepo;
 using Library.Domain.Repositories.InventoryRepo;
 using Library.Domain.Repositories.UserRepo;
 using Library.Domain.Services.BookServices;
+using Library.Domain.Services.InventoryServices;
 using Library.Domain.Services.TokenServices;
 using Library.Domain.Services.UserServices;
 using Library.Infra;
@@ -22,6 +23,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 

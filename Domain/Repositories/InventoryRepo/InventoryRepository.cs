@@ -33,32 +33,23 @@ public class InventoryRepository : IInventoryRepository
         await db.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Inventory>> GetAllInventoryAsync()
+    public async Task<IEnumerable<Inventory>?> GetAllInventoryAsync()
     {
-        IEnumerable<Inventory> inventory = await db.Inventory.ToListAsync();
-
-        if (inventory == null)
-            throw new Exception("Not registered yet");
+        IEnumerable<Inventory>? inventory = await db.Inventory.ToListAsync();
     
         return inventory;
     }
 
-    public async Task<Inventory> GetInventoryByIdAsync(Guid id)
+    public async Task<Inventory?> GetInventoryByIdAsync(Guid id)
     {
         Inventory? inventoryRegistry = await db.Inventory.FirstOrDefaultAsync(i => i.Id == id);
-
-        if (inventoryRegistry == null)
-            throw new Exception("Register not found");
 
         return inventoryRegistry;
     }
 
-    public async Task<Inventory> GetInventoryByBookIdAsync(Guid id)
+    public async Task<Inventory?> GetInventoryByBookIdAsync(Guid id)
     {
         Inventory? inventoryRegistry = await db.Inventory.FirstOrDefaultAsync(i => i.BookId == id);
-
-        if (inventoryRegistry == null)
-            throw new Exception("Register not found");
 
         return inventoryRegistry;
     }

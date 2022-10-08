@@ -20,7 +20,7 @@ public class InventoryService : IInventoryService
     public async Task<InventoryAddResponseDto> AddInventoryAsync(InventoryAddRequestDto inventory)
     {
         BookGetResponseDto book = await bookService.GetBookByIdAsync(inventory.BookId);
-        Inventory inventoryExists = await inventoryRepository.GetInventoryByBookIdAsync(book.Id);
+        Inventory? inventoryExists = await inventoryRepository.GetInventoryByBookIdAsync(book.Id);
 
         if (inventoryExists != null)
             throw new Exception("This book's already registered on Inventory");
@@ -34,6 +34,7 @@ public class InventoryService : IInventoryService
 
             return new InventoryAddResponseDto
             {
+                Id = inventoryAdded.Id,
                 BookName = book.Title,
                 Amount = inventoryAdded.Amount,
             };
@@ -47,10 +48,10 @@ public class InventoryService : IInventoryService
 
     public async Task<IEnumerable<InventoryGetResponseDto>> GetAllInventoryAsync()
     {
-        IEnumerable<Inventory> inventories = await inventoryRepository.GetAllInventoryAsync();
+        IEnumerable<Inventory>? inventories = await inventoryRepository.GetAllInventoryAsync();
         IList<InventoryGetResponseDto> inventoryRegisters = new List<InventoryGetResponseDto>();
 
-        if (inventories.Any())
+        if (inventories != null)
         {
             foreach(var inv in inventories)
             {
@@ -73,7 +74,7 @@ public class InventoryService : IInventoryService
 
     public async Task<InventoryGetResponseDto> GetInventoryAsync(Guid id)
     {
-        Inventory inventory = await inventoryRepository.GetInventoryByIdAsync(id);
+        Inventory? inventory = await inventoryRepository.GetInventoryByIdAsync(id);
 
         if (inventory == null)
             throw new Exception("Register not found");
@@ -93,7 +94,7 @@ public class InventoryService : IInventoryService
 
     public async Task<InventoryUpdateResponseDto> UpdateInventoryAsync(Guid id, InventoryUpdateRequestDto inventory)
     {
-        Inventory inventoryFinded = await inventoryRepository.GetInventoryByIdAsync(id);
+        Inventory? inventoryFinded = await inventoryRepository.GetInventoryByIdAsync(id);
         BookGetResponseDto book = await bookService.GetBookByIdAsync(inventory.BookId);
 
         if (inventoryFinded == null)
