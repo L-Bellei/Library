@@ -4,20 +4,29 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Library.Infra.ContextConfiguration;
 
-public class InventoryConfiguration : IEntityTypeConfiguration<Inventory>
+public class PenaltyConfiguration : IEntityTypeConfiguration<Penalty>
 {
-    public void Configure(EntityTypeBuilder<Inventory> builder)
+    public void Configure(EntityTypeBuilder<Penalty> builder)
     {
         builder
-            .ToTable("inventory");
+            .ToTable("penalties");
 
         builder
-            .Property(i => i.Amount)
+            .Property(p => p.PenaltyPrice)
+            .IsRequired();
+
+        builder
+            .Property(p => p.Settled)
             .IsRequired();
 
         builder
             .HasOne(i => i.Book)
-            .WithMany(b => b.Inventories)
+            .WithMany(b => b.Penalties)
+            .IsRequired();
+
+        builder
+            .HasOne(i => i.User)
+            .WithMany(b => b.Penalties)
             .IsRequired();
 
         builder

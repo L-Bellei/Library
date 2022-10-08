@@ -1,8 +1,12 @@
 using Library.Domain.Repositories.BookRepo;
 using Library.Domain.Repositories.InventoryRepo;
+using Library.Domain.Repositories.LoanRepo;
+using Library.Domain.Repositories.PenaltyRepo;
 using Library.Domain.Repositories.UserRepo;
 using Library.Domain.Services.BookServices;
 using Library.Domain.Services.InventoryServices;
+using Library.Domain.Services.LoanServices;
+using Library.Domain.Services.PenaltyServices;
 using Library.Domain.Services.TokenServices;
 using Library.Domain.Services.UserServices;
 using Library.Infra;
@@ -19,12 +23,22 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSqlServer<ApplicationDbContext>(builder.Configuration["ConnectionStrings:LibraryDb"]);
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
+
 builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
+
+builder.Services.AddScoped<IPenaltyService, PenaltyService>();
+builder.Services.AddScoped<IPenaltyRepository, PenaltyRepository>();
+
+builder.Services.AddScoped<ILoanService, LoanService>();
+builder.Services.AddScoped<ILoanRepository, LoanRepository>();
+
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 var key = Encoding.ASCII.GetBytes(builder.Configuration["Secret"]);

@@ -9,6 +9,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Book> Books { get; set; }
     public DbSet<Inventory> Inventory { get; set; }
+    public DbSet<Penalty> Penalties { get; set; }
+    public DbSet<Loan> Loans { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> opt) : base(opt) { }
 
@@ -21,5 +23,9 @@ public class ApplicationDbContext : DbContext
         builder.ApplyConfiguration(new BookConfiguration());
 
         builder.ApplyConfiguration(new InventoryConfiguration());
+        
+        builder.ApplyConfiguration(new PenaltyConfiguration());
+        
+        builder.ApplyConfiguration(new LoanConfiguration());
     }
 }
