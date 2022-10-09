@@ -140,7 +140,7 @@ public class LoanController : ControllerBase
     [HttpGet]
     [Route("getloansbyperiod")]
     [Authorize(Roles = "Employee, Manager, Student")]
-    public async Task<IActionResult> GetUserLoans([FromBody] LoanGetByPeriodRequestDto period)
+    public async Task<IActionResult> GetLoansByPeriod([FromBody] LoanGetByPeriodRequestDto period)
     {
         try
         {

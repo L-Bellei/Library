@@ -3,6 +3,7 @@ using Library.Domain.Repositories.BookRepo;
 using Library.Domain.Repositories.InventoryRepo;
 using Library.Domain.Repositories.LoanRepo;
 using Library.Domain.Repositories.LoanRepo.Dtos;
+using Library.Domain.Repositories.MovimentationRepo;
 using Library.Domain.Repositories.PenaltyRepo;
 using Library.Domain.Repositories.UserRepo;
 
@@ -15,8 +16,9 @@ public class LoanService : ILoanService
     private readonly IBookRepository bookRepository;
     private readonly IUserRepository userRepository;
     private readonly IPenaltyRepository penaltyRepository;
+    private readonly IMovimentationRepository movimentationRepository;
 
-    public LoanService(ILoanRepository loanRepository, IInventoryRepository inventoryRepository,
+    public LoanService(ILoanRepository loanRepository, IInventoryRepository inventoryRepository, IMovimentationRepository movimentationRepository,
         IBookRepository bookRepository, IUserRepository userRepository, IPenaltyRepository penaltyRepository)
     {
         this.loanRepository = loanRepository;
@@ -24,6 +26,7 @@ public class LoanService : ILoanService
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
         this.penaltyRepository = penaltyRepository;
+        this.movimentationRepository = movimentationRepository;
     }
 
     public async Task<LoanAddResponseDto> AddLoanAsync(LoanAddRequestDto loan)
@@ -54,6 +57,12 @@ public class LoanService : ILoanService
 
                         Book book = await bookRepository.GetBookById(loan.BookId);
                         User user = await userRepository.GetUserAsync(loan.StudentId);
+
+                        Movimentation movimentationAdded = await movimentationRepository.AddMovimentationAsync(new Movimentation
+                        {
+                            BookId = book.Id,
+                            UserId = user.Id,
+                        });
 
                         return new LoanAddResponseDto
                         {
@@ -350,6 +359,12 @@ public class LoanService : ILoanService
 
             Book book = await bookRepository.GetBookById(loanUpdated.BookId);
             User user = await userRepository.GetUserAsync(loanUpdated.UserId);
+
+            Movimentation movimentationAdded = await movimentationRepository.AddMovimentationAsync(new Movimentation
+            {
+                BookId = book.Id,
+                UserId = user.Id,
+            });
 
             return new LoanUpdateResponseDto
             {

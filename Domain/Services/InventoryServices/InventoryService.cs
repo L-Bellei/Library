@@ -2,6 +2,8 @@
 using Library.Domain.Repositories.BookRepo;
 using Library.Domain.Repositories.InventoryRepo;
 using Library.Domain.Repositories.InventoryRepo.Dtos;
+using Library.Domain.Repositories.MovimentationRepo;
+using Library.Domain.Repositories.UserRepo;
 
 namespace Library.Domain.Services.InventoryServices;
 
@@ -9,14 +11,19 @@ public class InventoryService : IInventoryService
 {
     private readonly IBookRepository bookRepository;
     private readonly IInventoryRepository inventoryRepository;
+    private readonly IMovimentationRepository movimentationRepository;
+    private readonly IUserRepository userRepository;
 
-    public InventoryService(IBookRepository bookRepository, IInventoryRepository inventoryRepository)
+    public InventoryService(IBookRepository bookRepository, IInventoryRepository inventoryRepository,
+        IMovimentationRepository movimentationRepository, IUserRepository userRepository)
     {
         this.inventoryRepository = inventoryRepository;
         this.bookRepository = bookRepository;
+        this.movimentationRepository = movimentationRepository;
+        this.userRepository = userRepository;
     }
 
-    public async Task<InventoryAddResponseDto> AddInventoryAsync(InventoryAddRequestDto inventory)
+    public async Task<InventoryAddResponseDto> AddInventoryAsync(string username, InventoryAddRequestDto inventory)
     {
         Book book = await bookRepository.GetBookById(inventory.BookId);
         Inventory? inventoryExists = await inventoryRepository.GetInventoryByBookIdAsync(book.Id);
@@ -25,18 +32,34 @@ public class InventoryService : IInventoryService
             throw new Exception("This book's already registered on Inventory");
         else
         {
+
             Inventory inventoryAdded = await inventoryRepository.AddInventoryAsync(new Inventory
             {
                 BookId = book.Id,
                 Amount = inventory.Amount,
             });
 
-            return new InventoryAddResponseDto
+            IEnumerable<User>? users = await userRepository.GetAllUsersAsync();
+            User? user = users!.FirstOrDefault(u => u.UserName == username);
+
+            Movimentation movimentationAdded = await movimentationRepository.AddMovimentationAsync(new Movimentation
             {
-                Id = inventoryAdded.Id,
-                BookName = book.Title,
-                Amount = inventoryAdded.Amount,
-            };
+                BookId = book.Id,
+                UserId = user!.Id,
+            });
+
+            if (movimentationAdded != null)
+            {
+
+                return new InventoryAddResponseDto
+                {
+                    Id = inventoryAdded.Id,
+                    BookName = book.Title,
+                    Amount = inventoryAdded.Amount,
+                };
+            }
+            else
+                throw new Exception("Unable to add to inventory");
         }
     }
 
@@ -52,7 +75,7 @@ public class InventoryService : IInventoryService
 
         if (inventories != null)
         {
-            foreach(var inv in inventories)
+            foreach (var inv in inventories)
             {
                 Book book = await bookRepository.GetBookById(inv.BookId);
                 InventoryGetResponseDto aux = new()
@@ -91,7 +114,7 @@ public class InventoryService : IInventoryService
 
     }
 
-    public async Task<InventoryUpdateResponseDto> UpdateInventoryAsync(Guid id, InventoryUpdateRequestDto inventory)
+    public async Task<InventoryUpdateResponseDto> UpdateInventoryAsync(Guid id, string username, InventoryUpdateRequestDto inventory)
     {
         Inventory? inventoryFinded = await inventoryRepository.GetInventoryByIdAsync(id);
         Book book = await bookRepository.GetBookById(inventory.BookId);
@@ -103,11 +126,26 @@ public class InventoryService : IInventoryService
 
         Inventory inventoryUpdated = await inventoryRepository.UpdateInventoryAsync(inventoryFinded);
 
-        return new InventoryUpdateResponseDto
+        IEnumerable<User>? users = await userRepository.GetAllUsersAsync();
+        User? user = users!.FirstOrDefault(u => u.UserName == username);
+
+        Movimentation movimentationAdded = await movimentationRepository.AddMovimentationAsync(new Movimentation
         {
-            Id = inventoryUpdated.Id,
-            BookName = book.Title,
-            Amount = inventoryUpdated.Amount,
-        };
+            BookId = book.Id,
+            UserId = user!.Id,
+        });
+        
+        if (movimentationAdded != null)
+        {
+            return new InventoryUpdateResponseDto
+            {
+                Id = inventoryUpdated.Id,
+                BookName = book.Title,
+                Amount = inventoryUpdated.Amount,
+            };
+
+        }
+        else
+            throw new Exception("Unable to update inventory");
     }
 }

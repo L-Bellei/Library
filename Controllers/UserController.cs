@@ -54,7 +54,7 @@ public class UserController : ControllerBase
 
     [HttpPost]
     [Route("adduser")]
-    [AllowAnonymous]
+    [Authorize(Roles = "Employee, Manager")]
     public async Task<IActionResult> AddUser([FromBody] UserAddRequestDto user)
     {
         try

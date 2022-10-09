@@ -11,5 +11,7 @@ public class Movimentation
 
     public Movimentation()
     {
+        this.Id = Guid.NewGuid();   
+        this.MovimentationDate = DateTime.Now;
     }
 }

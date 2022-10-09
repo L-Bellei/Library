@@ -2,6 +2,8 @@
 using Library.Domain.Services.InventoryServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.Security.Claims;
 
 namespace Library.Controllers;
 
@@ -64,7 +66,11 @@ public class InventoryController : ControllerBase
     {
         try
         {
-            InventoryAddResponseDto inventoryAdded = await services.AddInventoryAsync(inventory);
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            var username = identity!.Name;
+
+            InventoryAddResponseDto inventoryAdded = await services.AddInventoryAsync(username!, inventory);
 
             if (inventoryAdded == null)
                 return BadRequest("Register not found");
@@ -84,7 +90,11 @@ public class InventoryController : ControllerBase
     {
         try
         {
-            InventoryUpdateResponseDto inventoryUpdated = await services.UpdateInventoryAsync(id, inventory);
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            var username = identity!.Name;
+
+            InventoryUpdateResponseDto inventoryUpdated = await services.UpdateInventoryAsync(id, username!, inventory);
 
             if (inventoryUpdated == null)
                 return BadRequest("Register not found");

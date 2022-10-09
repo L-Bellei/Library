@@ -46,6 +46,22 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                     Email = "admin@library.com",
                     Password = "admin",
                     Role = "Manager",
+                },
+                new User
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "Employee",
+                    Email = "employee@library.com",
+                    Password = "employee",
+                    Role = "Employee",
+                },
+                new User
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "Student",
+                    Email = "student@library.com",
+                    Password = "student",
+                    Role = "Student",
                 }
             );
     }
