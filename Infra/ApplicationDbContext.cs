@@ -11,6 +11,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Inventory> Inventory { get; set; }
     public DbSet<Penalty> Penalties { get; set; }
     public DbSet<Loan> Loans { get; set; }
+    public DbSet<Movimentation> Movimentations { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> opt) : base(opt) { }
 
@@ -27,5 +28,7 @@ public class ApplicationDbContext : DbContext
         builder.ApplyConfiguration(new PenaltyConfiguration());
         
         builder.ApplyConfiguration(new LoanConfiguration());
+
+        builder.ApplyConfiguration(new MovimentationConfiguration());
     }
 }

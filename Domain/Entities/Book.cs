@@ -10,6 +10,7 @@ public class Book
     public List<Inventory> Inventories { get; set; }
     public List<Penalty> Penalties { get; set; }
     public List<Loan> Loans { get; set; }
+    public List<Movimentation> Movimentations { get; set; }
 
     public Book()
     {
