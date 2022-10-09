@@ -37,27 +37,36 @@ public class LoanService : ILoanService
             {
                 if (inventory.Amount > 0)
                 {
-                    Loan loanAdded = await loanRepository.AddLoanAsync(new Loan
-                    {
-                        BookId = loan.BookId,
-                        UserId = loan.StudentId,
-                        LoanDate = DateTime.Now,
-                        DeadlineDate = DateTime.Now.AddDays(5),
-                        Returned = false,
-                    });
+                    inventory.Amount -= 1;
 
-                    Book book = await bookRepository.GetBookById(loan.BookId);
-                    User user = await userRepository.GetUserAsync(loan.StudentId);
+                    Inventory? inventoryUpdated = await inventoryRepository.UpdateInventoryAsync(inventory);
 
-                    return new LoanAddResponseDto
+                    if (inventoryUpdated != null)
                     {
-                        Id = loanAdded.Id,
-                        BookName = book.Title,
-                        UserName = user.UserName,
-                        LoanDate = loanAdded.LoanDate,
-                        DeadlineDate = loanAdded.DeadlineDate,
-                        Returned = loanAdded.Returned,
-                    };
+                        Loan loanAdded = await loanRepository.AddLoanAsync(new Loan
+                        {
+                            BookId = loan.BookId,
+                            UserId = loan.StudentId,
+                            LoanDate = DateTime.Now,
+                            DeadlineDate = DateTime.Now.AddDays(5),
+                            Returned = false,
+                        });
+
+                        Book book = await bookRepository.GetBookById(loan.BookId);
+                        User user = await userRepository.GetUserAsync(loan.StudentId);
+
+                        return new LoanAddResponseDto
+                        {
+                            Id = loanAdded.Id,
+                            BookName = book.Title,
+                            UserName = user.UserName,
+                            LoanDate = loanAdded.LoanDate,
+                            DeadlineDate = loanAdded.DeadlineDate,
+                            Returned = loanAdded.Returned,
+                        };
+                    }
+                    else
+                        throw new Exception("Haven't books in inventory");
                 }
                 else
                     throw new Exception("Haven't books in inventory");

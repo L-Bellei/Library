@@ -74,6 +74,30 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
                     Author = "Niccolo Machiavelli",
                     PublishCompany = "Antonio Blado d'Asola",
                     Subject = "It's about Machiavelli vision"
+                },
+                new Book
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "The Hobbit: An Unexpected Journey",
+                    Author = "J R R Tolkien",
+                    PublishCompany = "Mariner Books",
+                    Subject = "Bilbo and your friends fighting with a dragon"
+                },
+                new Book
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "The Hobbit: The desolation of Smaug",
+                    Author = "J R R Tolkien",
+                    PublishCompany = "Mariner Books",
+                    Subject = "Bilbo and your friends fighting with a dragon"
+                },
+                new Book
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "The Hobbit: The battle of the five arms",
+                    Author = "J R R Tolkien",
+                    PublishCompany = "Mariner Books",
+                    Subject = "Bilbo and your friends fighting with a dragon"
                 }
             );
     }
