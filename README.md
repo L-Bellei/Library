@@ -19,6 +19,12 @@
 - On Swagger: 
   - Use default User "Admin": { e-mail: admin@library.com, password: admin } for initial login to get the token on response.
 
+### For authorize tests on methods:
+ 
+- Manager: e-mail: admin@library.com, password: admin
+- Employee: e-mail: employee@library.com, password: employee
+- Student: e-mail: student@library.com, password: student
+
 ### Packages:
 
 - Microsoft.EntityFrameworkCore
