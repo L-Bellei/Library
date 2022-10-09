@@ -11,7 +11,6 @@ public class Loan
     public Guid BookId { get; set; }
     public User User { get; set; }
     public Guid UserId { get; set; }
-    public List<Penalty> Penalties { get; set; }
 
     public Loan()
     {

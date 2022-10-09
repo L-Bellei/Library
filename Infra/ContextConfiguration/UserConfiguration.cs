@@ -36,5 +36,17 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .Property<DateTime>("updatedAt")
             .HasDefaultValueSql("getdate()")
             .IsRequired();
+
+        builder
+            .HasData(
+                new User
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "Admin",
+                    Email = "admin@library.com",
+                    Password = "admin",
+                    Role = "Manager",
+                }
+            );
     }
 }

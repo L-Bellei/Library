@@ -17,6 +17,7 @@ public class Book
 
     public Book(string title, string author, string publishCompany, string subject)
     {
+        this.Id = new Guid();
         this.Author = author;
         this.Title = title;
         this.PublishCompany = publishCompany;

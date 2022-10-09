@@ -40,5 +40,41 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
             .Property<DateTime>("updatedAt")
             .HasDefaultValueSql("getdate()")
             .IsRequired();
+
+        builder
+            .HasData(
+                new Book
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "The Lord of the rings - The fellowship of the ring",
+                    Author = "J R R Tolkien",
+                    PublishCompany = "George Allen & Unwin",
+                    Subject = "Frodo and your friends set out on an adventure"
+                },
+                new Book
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "The Lord of the rings - The two towers",
+                    Author = "J R R Tolkien",
+                    PublishCompany = "George Allen & Unwin",
+                    Subject = "Frodo and your friends set out on an adventure"
+                },
+                new Book
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "The Lord of the rings - The return of the king",
+                    Author = "J R R Tolkien",
+                    PublishCompany = "George Allen & Unwin",
+                    Subject = "Frodo and your friends set out on an adventure"
+                },
+                new Book
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "The Prince",
+                    Author = "Niccolo Machiavelli",
+                    PublishCompany = "Antonio Blado d'Asola",
+                    Subject = "It's about Machiavelli vision"
+                }
+            );
     }
 }

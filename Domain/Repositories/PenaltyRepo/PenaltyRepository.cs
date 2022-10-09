@@ -55,13 +55,6 @@ public class PenaltyRepository : IPenaltyRepository
         return penalty;
     }
 
-    public async Task<Penalty?> GetPenaltyByLoanIdAsync(Guid id)
-    {
-        Penalty? penalty = await db.Penalties.FirstOrDefaultAsync(p => p.LoanId == id);
-
-        return penalty;
-    }
-
     public async Task<Penalty?> GetPenaltyByUserIdAsync(Guid id)
     {
         Penalty? penalty = await db.Penalties.FirstOrDefaultAsync(p => p.UserId == id);

@@ -61,6 +61,40 @@ namespace Library.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("books", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("b0470a59-3ee7-4b06-aa81-e43c213f6cd5"),
+                            Author = "J R R Tolkien",
+                            PublishCompany = "George Allen & Unwin",
+                            Subject = "Frodo and your friends set out on an adventure",
+                            Title = "The Lord of the rings - The fellowship of the ring"
+                        },
+                        new
+                        {
+                            Id = new Guid("1807e40d-18ee-4b46-9d47-6fe6d57f0534"),
+                            Author = "J R R Tolkien",
+                            PublishCompany = "George Allen & Unwin",
+                            Subject = "Frodo and your friends set out on an adventure",
+                            Title = "The Lord of the rings - The two towers"
+                        },
+                        new
+                        {
+                            Id = new Guid("601cac44-40c8-428e-9268-90e74466240c"),
+                            Author = "J R R Tolkien",
+                            PublishCompany = "George Allen & Unwin",
+                            Subject = "Frodo and your friends set out on an adventure",
+                            Title = "The Lord of the rings - The return of the king"
+                        },
+                        new
+                        {
+                            Id = new Guid("85c49318-4d06-41f0-836f-7c3032e8bd1d"),
+                            Author = "Niccolo Machiavelli",
+                            PublishCompany = "Antonio Blado d'Asola",
+                            Subject = "It's about Machiavelli vision",
+                            Title = "The Prince"
+                        });
                 });
 
             modelBuilder.Entity("Library.Domain.Entities.Inventory", b =>
@@ -104,7 +138,7 @@ namespace Library.Migrations
                     b.Property<DateTime>("DeadlineDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DevolutionDate")
+                    b.Property<DateTime?>("DevolutionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("LoanDate")
@@ -144,9 +178,6 @@ namespace Library.Migrations
                     b.Property<Guid>("BookId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("LoanId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<float>("PenaltyPrice")
                         .HasColumnType("real");
 
@@ -169,8 +200,6 @@ namespace Library.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
-
-                    b.HasIndex("LoanId");
 
                     b.HasIndex("UserId");
 
@@ -212,6 +241,16 @@ namespace Library.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("263a179f-75e4-4b98-81ae-4f1d9945753b"),
+                            Email = "admin@library.com",
+                            Password = "admin",
+                            Role = "Manager",
+                            UserName = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("Library.Domain.Entities.Inventory", b =>
@@ -252,12 +291,6 @@ namespace Library.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Library.Domain.Entities.Loan", "Loan")
-                        .WithMany("Penalties")
-                        .HasForeignKey("LoanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Library.Domain.Entities.User", "User")
                         .WithMany("Penalties")
                         .HasForeignKey("UserId")
@@ -265,8 +298,6 @@ namespace Library.Migrations
                         .IsRequired();
 
                     b.Navigation("Book");
-
-                    b.Navigation("Loan");
 
                     b.Navigation("User");
                 });
@@ -277,11 +308,6 @@ namespace Library.Migrations
 
                     b.Navigation("Loans");
 
-                    b.Navigation("Penalties");
-                });
-
-            modelBuilder.Entity("Library.Domain.Entities.Loan", b =>
-                {
                     b.Navigation("Penalties");
                 });
 

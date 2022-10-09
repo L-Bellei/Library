@@ -65,22 +65,29 @@ public class LoanService : ILoanService
             else
                 throw new Exception("Haven't books in inventory");
         }
-            throw new Exception("The student have penalties not settleds");
+        throw new Exception("The student have penalties not settleds");
     }
 
     public async Task DeleteLoanAsync(Guid id)
     {
-        Penalty? penaltyFinded = await penaltyRepository.GetPenaltyByLoanIdAsync(id);
+        Loan? loanFinded = await loanRepository.GetLoanByIdAsync(id);
 
-        if (penaltyFinded != null)
+        if (loanFinded != null)
         {
-            if (penaltyFinded.Settled == false)
-                throw new Exception("Is not possible to delete, ");
+            Penalty? penaltyFinded = await penaltyRepository.GetPenaltyByUserIdAsync(loanFinded.UserId);
+
+            if (penaltyFinded != null)
+            {
+                if (penaltyFinded.Settled == false)
+                    throw new Exception("Is not possible to delete, ");
+                else
+                    await loanRepository.DeleteLoanAsync(id);
+            }
             else
                 await loanRepository.DeleteLoanAsync(id);
         }
         else
-            await loanRepository.DeleteLoanAsync(id);
+            throw new Exception("Loan not found");
     }
 
     public async Task<IEnumerable<LoanGetResponseDto>> GetAllExpiredLoansAsync()
@@ -119,7 +126,7 @@ public class LoanService : ILoanService
         IEnumerable<Loan> loans = await loanRepository.GetAllLoansAsync();
         IList<LoanGetResponseDto> loansResponse = new List<LoanGetResponseDto>();
 
-        foreach(var loan in loans)
+        foreach (var loan in loans)
         {
             Book book = await bookRepository.GetBookById(loan.BookId);
             User user = await userRepository.GetUserAsync(loan.UserId);
@@ -139,7 +146,7 @@ public class LoanService : ILoanService
         }
 
         return loansResponse;
-        
+
     }
 
     public async Task<IEnumerable<LoanGetResponseDto>> GetAllLoansByBookAsync(Guid id)
@@ -177,7 +184,7 @@ public class LoanService : ILoanService
         if (loanDate != null)
             loans = loans.Where(l => l.LoanDate >= loanDate).ToList();
 
-        if(deadlineDate != null)
+        if (deadlineDate != null)
             loans = loans.Where(l => l.DeadlineDate <= deadlineDate).ToList();
 
         IList<LoanGetResponseDto> loansResponse = new List<LoanGetResponseDto>();

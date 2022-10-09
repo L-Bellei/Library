@@ -9,8 +9,6 @@ public class Penalty
     public Guid BookId { get; set; }
     public User User { get; set; }
     public Guid UserId { get; set; }
-    public Loan Loan { get; set; }
-    public Guid LoanId { get; set; }
 
     public Penalty()
     {

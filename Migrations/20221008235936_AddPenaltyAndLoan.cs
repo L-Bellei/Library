@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Library.Migrations
 {
-    public partial class PenaltyLoanMigration : Migration
+    public partial class AddPenaltyAndLoan : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,7 +16,7 @@ namespace Library.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LoanDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DeadlineDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DevolutionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DevolutionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Returned = table.Column<bool>(type: "bit", nullable: false),
                     BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -49,7 +49,6 @@ namespace Library.Migrations
                     Settled = table.Column<bool>(type: "bit", nullable: false),
                     BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LoanId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     createdAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
                     updatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
@@ -63,18 +62,28 @@ namespace Library.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_penalties_Loans_LoanId",
-                        column: x => x.LoanId,
-                        principalTable: "Loans",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_penalties_users_UserId",
                         column: x => x.UserId,
                         principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "books",
+                columns: new[] { "Id", "Author", "PublishCompany", "Subject", "Title" },
+                values: new object[,]
+                {
+                    { new Guid("1807e40d-18ee-4b46-9d47-6fe6d57f0534"), "J R R Tolkien", "George Allen & Unwin", "Frodo and your friends set out on an adventure", "The Lord of the rings - The two towers" },
+                    { new Guid("601cac44-40c8-428e-9268-90e74466240c"), "J R R Tolkien", "George Allen & Unwin", "Frodo and your friends set out on an adventure", "The Lord of the rings - The return of the king" },
+                    { new Guid("85c49318-4d06-41f0-836f-7c3032e8bd1d"), "Niccolo Machiavelli", "Antonio Blado d'Asola", "It's about Machiavelli vision", "The Prince" },
+                    { new Guid("b0470a59-3ee7-4b06-aa81-e43c213f6cd5"), "J R R Tolkien", "George Allen & Unwin", "Frodo and your friends set out on an adventure", "The Lord of the rings - The fellowship of the ring" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "users",
+                columns: new[] { "Id", "Email", "Password", "Role", "UserName" },
+                values: new object[] { new Guid("263a179f-75e4-4b98-81ae-4f1d9945753b"), "admin@library.com", "admin", "Manager", "Admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Loans_BookId",
@@ -92,11 +101,6 @@ namespace Library.Migrations
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_penalties_LoanId",
-                table: "penalties",
-                column: "LoanId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_penalties_UserId",
                 table: "penalties",
                 column: "UserId");
@@ -105,10 +109,35 @@ namespace Library.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "penalties");
+                name: "Loans");
 
             migrationBuilder.DropTable(
-                name: "Loans");
+                name: "penalties");
+
+            migrationBuilder.DeleteData(
+                table: "books",
+                keyColumn: "Id",
+                keyValue: new Guid("1807e40d-18ee-4b46-9d47-6fe6d57f0534"));
+
+            migrationBuilder.DeleteData(
+                table: "books",
+                keyColumn: "Id",
+                keyValue: new Guid("601cac44-40c8-428e-9268-90e74466240c"));
+
+            migrationBuilder.DeleteData(
+                table: "books",
+                keyColumn: "Id",
+                keyValue: new Guid("85c49318-4d06-41f0-836f-7c3032e8bd1d"));
+
+            migrationBuilder.DeleteData(
+                table: "books",
+                keyColumn: "Id",
+                keyValue: new Guid("b0470a59-3ee7-4b06-aa81-e43c213f6cd5"));
+
+            migrationBuilder.DeleteData(
+                table: "users",
+                keyColumn: "Id",
+                keyValue: new Guid("263a179f-75e4-4b98-81ae-4f1d9945753b"));
         }
     }
 }

@@ -1,50 +1,207 @@
-﻿using Library.Domain.Repositories.PenaltyRepo;
+﻿using Library.Domain.Entities;
+using Library.Domain.Repositories.BookRepo;
+using Library.Domain.Repositories.PenaltyRepo;
 using Library.Domain.Repositories.PenaltyRepo.Dtos;
-using Library.Domain.Services.LoanServices;
+using Library.Domain.Repositories.UserRepo;
 
 namespace Library.Domain.Services.PenaltyServices;
 
 public class PenaltyService : IPenaltyService
 {
     private readonly IPenaltyRepository penaltyRepository;
+    private readonly IBookRepository bookRepository;
+    private readonly IUserRepository userRepository;
 
-    public PenaltyService(IPenaltyRepository penaltyRepository, ILoanService loanService)
+    public PenaltyService(IPenaltyRepository penaltyRepository, IBookRepository bookRepository,
+        IUserRepository userRepository)
     {
         this.penaltyRepository = penaltyRepository;
+        this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
     }
 
-    public Task<PenaltyAddResponseDto> AddPenaltyAsync(PenaltyAddRequestDto penalty)
+    public async Task<PenaltyAddResponseDto> AddPenaltyAsync(PenaltyAddRequestDto penalty)
     {
-        throw new NotImplementedException();
+        Penalty penaltyAdded = await penaltyRepository.AddPenaltyAsync(new Penalty
+        {
+            BookId = penalty.BookId,
+            PenaltyPrice = penalty.PenaltyPrice,
+            Settled = false,
+            UserId = penalty.UserId,
+        });
+
+        Book book = await bookRepository.GetBookById(penaltyAdded.BookId);
+        User user = await userRepository.GetUserAsync(penaltyAdded.UserId);
+
+        if (book != null && user != null)
+        {
+            return new PenaltyAddResponseDto
+            {
+                Id = penaltyAdded.Id,
+                PenaltyPrice = penaltyAdded.PenaltyPrice,
+                BookName = book.Title,
+                UserName = user.UserName,
+            };
+        }
+        else
+            throw new Exception("Book or User not found");
     }
 
-    public Task DeletePenaltyAsync(Guid id)
+    public async Task DeletePenaltyAsync(Guid id)
     {
-        throw new NotImplementedException();
+        Penalty? penalty = await penaltyRepository.GetPenaltyByIdAsync(id);
+    
+        if(penalty != null)
+        {
+            if (!penalty.Settled)
+                await penaltyRepository.DeletePenaltyAsync(penalty.Id);
+            else
+                throw new Exception("This penalty are not settled yet");
+        }
+        else
+            throw new Exception("Penalty not found");
     }
 
-    public Task<IEnumerable<PenaltyGetResponseDto>> GetAllNotSettledPenaltiesAsync()
+    public async Task<IEnumerable<PenaltyGetResponseDto>> GetAllNotSettledPenaltiesAsync()
     {
-        throw new NotImplementedException();
+        IEnumerable<Penalty> penalties = await penaltyRepository.GetAllPenaltiesAsync();
+        penalties = penalties.Where(p => p.Settled == false).ToList();
+        IList<PenaltyGetResponseDto> penaltiesFinded = new List<PenaltyGetResponseDto>();
+
+        if (penalties.Any())
+        {
+            foreach (var penalty in penalties)
+            {
+                Book book = await bookRepository.GetBookById(penalty.BookId);
+                User user = await userRepository.GetUserAsync(penalty.UserId);
+
+                PenaltyGetResponseDto aux = new()
+                {
+                    Id = penalty.Id,
+                    BookName = book.Title,
+                    UserName = user.UserName,
+                    PenaltyPrice = penalty.PenaltyPrice,
+                    Settled = penalty.Settled,
+                };
+
+                penaltiesFinded.Add(aux);
+            }
+
+            return penaltiesFinded;
+        }
+        else
+            throw new Exception("No penalties registered yet");
     }
 
-    public Task<IEnumerable<PenaltyGetResponseDto>> GetAllPenaltiesAsync()
+    public async Task<IEnumerable<PenaltyGetResponseDto>> GetAllPenaltiesAsync()
     {
-        throw new NotImplementedException();
+        IEnumerable<Penalty> penalties = await penaltyRepository.GetAllPenaltiesAsync();
+        IList<PenaltyGetResponseDto> penaltiesFinded = new List<PenaltyGetResponseDto>();
+
+        if (penalties.Any())
+        {
+            foreach (var penalty in penalties)
+            {
+                Book book = await bookRepository.GetBookById(penalty.BookId);
+                User user = await userRepository.GetUserAsync(penalty.UserId);
+
+                PenaltyGetResponseDto aux = new()
+                {
+                    Id = penalty.Id,
+                    BookName = book.Title,
+                    UserName = user.UserName,
+                    PenaltyPrice = penalty.PenaltyPrice,
+                    Settled = penalty.Settled,
+                };
+
+                penaltiesFinded.Add(aux);
+            }
+
+            return penaltiesFinded;
+        }
+        else
+            throw new Exception("No penalties registered yet");
     }
 
-    public Task<IEnumerable<PenaltyGetResponseDto>> GetAllSettledPenaltiesAsync()
+    public async Task<IEnumerable<PenaltyGetResponseDto>> GetAllSettledPenaltiesAsync()
     {
-        throw new NotImplementedException();
+        IEnumerable<Penalty> penalties = await penaltyRepository.GetAllPenaltiesAsync();
+        penalties = penalties.Where(p => p.Settled == true).ToList();
+        IList<PenaltyGetResponseDto> penaltiesFinded = new List<PenaltyGetResponseDto>();
+
+        if (penalties.Any())
+        {
+            foreach (var penalty in penalties)
+            {
+                Book book = await bookRepository.GetBookById(penalty.BookId);
+                User user = await userRepository.GetUserAsync(penalty.UserId);
+
+                PenaltyGetResponseDto aux = new()
+                {
+                    Id = penalty.Id,
+                    BookName = book.Title,
+                    UserName = user.UserName,
+                    PenaltyPrice = penalty.PenaltyPrice,
+                    Settled = penalty.Settled,
+                };
+
+                penaltiesFinded.Add(aux);
+            }
+
+            return penaltiesFinded;
+        }
+        else
+            throw new Exception("No penalties registered yet");
     }
 
-    public Task<PenaltyGetResponseDto> GetPenaltyByIdAsync(Guid id)
+    public async Task<PenaltyGetResponseDto> GetPenaltyByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        Penalty? penalty = await penaltyRepository.GetPenaltyByIdAsync(id);
+
+        if (penalty == null)
+            throw new Exception("Penalty not found");
+        else
+        {
+            Book book = await bookRepository.GetBookById(penalty.BookId);
+            User user = await userRepository.GetUserAsync(penalty.UserId);
+
+            return new PenaltyGetResponseDto
+            {
+                Id = penalty.Id,
+                BookName = book.Title,
+                UserName = user.UserName,
+                PenaltyPrice = penalty.PenaltyPrice,
+                Settled = penalty.Settled,
+            };
+        }
     }
 
-    public Task<PenaltyUpdateResponseDto> UpdatePenaltyAsync(Guid id, PenaltyUpdateRequestDto penalty)
+    public async Task<PenaltyUpdateResponseDto> UpdatePenaltyAsync(Guid id, PenaltyUpdateRequestDto penalty)
     {
-        throw new NotImplementedException();
+        Penalty? penaltyFinded = await penaltyRepository.GetPenaltyByIdAsync(id);
+    
+        if(penaltyFinded == null)
+            throw new Exception("Penalty not found");
+        else
+        {
+            penaltyFinded.PenaltyPrice = penalty.PenaltyPrice;
+            penaltyFinded.BookId = penalty.BookId;
+            penaltyFinded.UserId = penalty.UserId;
+            penaltyFinded.Settled = penalty.Settled;
+
+            await penaltyRepository.UpdatePenaltyAsync(penaltyFinded);
+
+            Book book = await bookRepository.GetBookById(penalty.BookId);
+            User user = await userRepository.GetUserAsync(penalty.UserId);
+
+            return new PenaltyUpdateResponseDto
+            {
+                Id = penaltyFinded.Id,
+                BookName = book.Title,
+                UserName = user.UserName,
+                PenaltyPrice = penaltyFinded.PenaltyPrice,
+                Settled = penaltyFinded.Settled,
+            };
+        }
     }
 }
